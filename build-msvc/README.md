@@ -27,7 +27,7 @@ Options for installing the dependencies in a Visual Studio compatible manner are
 - Download the source code, build each dependency, add the required include paths, link libraries and binary tools to the Visual Studio project files.
 - Use [nuget](https://www.nuget.org/) packages with the understanding that any binary files have been compiled by an untrusted third party.
 
-The [external dependencies](https://github.com/e4coin/bitcoin/blob/master/doc/dependencies.md) required for building are:
+The [external dependencies](https://github.com/e4cash/e4Coin/blob/master/doc/dependencies.md) required for building are:
 
 - Berkeley DB
 - Boost

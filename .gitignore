@@ -136,3 +136,18 @@ make
 # CLion
 .idea
 cmake-build-debug
+
+# Build directories
+Debug/*
+Release/*
+.vs
+packages/*
+*/Obj
+*/Debug
+*/Release
+*/x64
+*.vcxproj.user
+*.vcxproj
+*/Win32
+libe4coin_qt/QtGeneratedFiles/*
+test_e4coin-qt/QtGeneratedFiles/*

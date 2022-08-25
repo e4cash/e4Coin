@@ -151,3 +151,7 @@ packages/*
 */Win32
 libe4coin_qt/QtGeneratedFiles/*
 test_e4coin-qt/QtGeneratedFiles/*
+
+!contrib/containers/ci/Dockerfile
+!contrib/containers/deploy/Dockerfile
+!contrib/containers/develop/Dockerfile

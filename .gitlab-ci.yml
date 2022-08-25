@@ -44,7 +44,7 @@ builder-image:
     - echo HOST=$HOST
     - |
       ls -l depends
-      chmod 764 -R depends     
+      chmod 755 -R depends     
       
       if [ "$HOST" = "x86_64-apple-darwin19" ]; then
         mkdir -p depends/SDKs

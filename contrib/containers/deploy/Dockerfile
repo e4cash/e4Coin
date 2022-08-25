@@ -1,28 +1,28 @@
 FROM phusion/baseimage:bionic-1.0.0
-LABEL maintainer="Dash Developers <dev@dash.org>"
-LABEL description="Dockerised DashCore, built from Travis"
+LABEL maintainer="e4Coin Developers <code@ab4cus.com>"
+LABEL description="Dockerised e4CoinCore, built from Travis"
 
 ARG USER_ID
 ARG GROUP_ID
 
-ENV HOME /home/dash
+ENV HOME /home/e4coin
 
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID:-1000}
 ENV GROUP_ID ${GROUP_ID:-1000}
-RUN groupadd -g ${GROUP_ID} dash && \
-    useradd -u ${USER_ID} -g dash -s /bin/bash -m -d /home/dash dash && \
-    mkdir /home/dash/.dashcore && \
-    chown ${USER_ID}:${GROUP_ID} -R /home/dash
+RUN groupadd -g ${GROUP_ID} e4coin && \
+    useradd -u ${USER_ID} -g dash -s /bin/e4coin -m -d /home/e4coin e4coin && \
+    mkdir /home/e4coin/.e4coincore && \
+    chown ${USER_ID}:${GROUP_ID} -R /home/e4coin
 
 COPY bin/* /usr/local/bin/
 
 RUN chmod a+x /usr/local/bin/*
 
-USER dash
+USER e4coin
 
-VOLUME ["/home/dash"]
+VOLUME ["/home/e4coin"]
 
-EXPOSE 9998 9999 19998 19999
+EXPOSE 7430 7431 17430 27430
 
-WORKDIR /home/dash
+WORKDIR /home/e4coin

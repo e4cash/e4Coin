@@ -8,10 +8,10 @@ services:
     tty: true         # Equivalent to -t
     stdin_open: true  # Equivalent to -i
     ports:
-      - "9998:9998"           # Mainnet Ports
-      - "9999:9999"
-      - "19998:19998"         # Testnet Ports
-      - "19999:19999"
+      - "7430:7430"           # Mainnet Ports
+      - "7431:7431"
+      - "17430:17430"         # Testnet Ports
+      - "27430:27430"
 
 # A note about volumes:
 #
@@ -26,7 +26,7 @@ services:
       - type: bind
 #        source: /host/$PWD # Workaround needed on non-Linux hosts
         source: ../../..
-        target: /src/dash
+        target: /src/e4coin
 
 # Sharing your ccache
 #
@@ -41,7 +41,7 @@ services:
 # NOTE: Only the first line is a continuation of the services.container.volumes
 #       definition
 
-#      - cache:/home/dash/.ccache
+#      - cache:/home/e4coin/.ccache
 #
 # volumes:
 #    cache:

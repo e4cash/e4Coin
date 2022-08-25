@@ -46,7 +46,8 @@ builder-image:
       if [ "$HOST" = "x86_64-apple-darwin19" ]; then
         mkdir -p depends/SDKs
         mkdir -p depends/sdk-sources
-        chmod 764 -R depends
+        chmod 764 -R depends     
+        ls -l depends  
         OSX_SDK_BASENAME="Xcode-${XCODE_VERSION}-${XCODE_BUILD_ID}-extracted-SDK-with-libcxx-headers.tar.gz"
         OSX_SDK_PATH="depends/sdk-sources/${OSX_SDK_BASENAME}"
         if [ ! -f "$OSX_SDK_PATH" ]; then

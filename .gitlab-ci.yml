@@ -202,6 +202,48 @@ x86_64-apple-darwin19:
 
 ###
 
+arm-linux-gnueabihf:
+  extends: .build-depends-template
+  variables:
+    HOST: arm-linux-gnueabihf
+
+x86_64-w64-mingw32:
+  extends:
+    - .build-depends-template
+    - .skip-in-fast-mode-template
+  variables:
+    HOST: x86_64-w64-mingw32
+
+i686-pc-linux-gnu:
+  extends:
+    - .build-depends-template
+    - .skip-in-fast-mode-template
+  variables:
+    HOST: i686-pc-linux-gnu
+
+x86_64-pc-linux-gnu-debug:
+  extends: .build-depends-template
+  variables:
+    HOST: x86_64-pc-linux-gnu
+    DEP_OPTS: "DEBUG=1"
+
+x86_64-pc-linux-gnu-nowallet:
+  extends:
+    - .build-depends-template
+    - .skip-in-fast-mode-template
+  variables:
+    HOST: x86_64-pc-linux-gnu
+    DEP_OPTS: "NO_WALLET=1"
+
+x86_64-apple-darwin19:
+  extends:
+    - .build-depends-template
+    - .skip-in-fast-mode-template
+  variables:
+    HOST: x86_64-apple-darwin19
+
+###
+
 arm-linux-build:
   extends: .build-template
   needs:
@@ -228,7 +270,7 @@ linux32-build:
     BUILD_TARGET: linux32
 
 linux32_ubsan-build:
-  extends:e4coinpay/e4coin
+  extends:
     - .build-template
     - .skip-in-fast-mode-template
   needs:

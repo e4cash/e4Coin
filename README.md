@@ -21,10 +21,10 @@ Pre-Built Binary
 ----------------
 
 For more information, as well as an immediately usable, binary version of
-the Dash Core software, see https://www.e4coin.io/downloads/.
+the e4coin Core software, see https://www.e4coin.io/downloads/.
 
 License
 -------
 
-Dash Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+e4coin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.

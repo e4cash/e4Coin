@@ -57,7 +57,7 @@ builder-image:
           tar -C depends/SDKs -xf "$OSX_SDK_PATH"
         fi
       fi
-script:
+  script:
     - make $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS
   cache:
     # Let all branches share the same cache, which is ok because the depends subsystem is able to handle this properly (it works with hashes of all scripts)
@@ -80,7 +80,7 @@ script:
   before_script:
     - export CACHE_DIR=$CI_PROJECT_DIR/cache
     - echo BUILD_TARGET=$BUILD_TARGET
-    - source ./ci/dash/matrix.sh
+    - source ./ci/e4coin/matrix.sh
 
     # Setup some environment variables
     - |
@@ -99,7 +99,7 @@ script:
           export PULL_REQUEST="false"
         fi
       fi
-- export COMMIT_RANGE="$CI_COMMIT_BEFORE_SHA..$CI_COMMIT_SHA"
+    - export COMMIT_RANGE="$CI_COMMIT_BEFORE_SHA..$CI_COMMIT_SHA"
     - export JOB_NUMBER="$CI_JOB_ID"
     - export HOST_SRC_DIR=$CI_PROJECT_DIR
     - echo PULL_REQUEST=$PULL_REQUEST COMMIT_RANGE=$COMMIT_RANGE HOST_SRC_DIR=$HOST_SRC_DIR CACHE_DIR=$CACHE_DIR
@@ -109,8 +109,8 @@ script:
   stage: build
   extends: .base-template
   script:
-    - ./ci/dash/build_src.sh
-    - ./ci/dash/test_unittests.sh # Run unit tests in build stage to avoid creating too many parallel jobs
+    - ./ci/e4coin/build_src.sh
+    - ./ci/e4coin/test_unittests.sh # Run unit tests in build stage to avoid creating too many parallel jobs
   cache:
     # Let all branches share the same cache, which is ok because ccache is able to handle it
     key:
@@ -126,13 +126,13 @@ script:
       - build-ci
     # Exclude some less important binaries to reduce the size of the artifacts
     exclude:
-      - build-ci/dashcore-$BUILD_TARGET/src/bench/bench_dash
-      - build-ci/dashcore-$BUILD_TARGET/src/bench/bench_dash.exe
-      - build-ci/dashcore-$BUILD_TARGET/src/qt/test/test_dash-qt
-      - build-ci/dashcore-$BUILD_TARGET/src/qt/test/test_dash-qt.exe
-      - build-ci/dashcore-$BUILD_TARGET/src/test/test_dash
-      - build-ci/dashcore-$BUILD_TARGET/src/test/test_dash.exe
-      - build-ci/dashcore-$BUILD_TARGET/src/test/fuzz/*
+      - build-ci/e4coincore-$BUILD_TARGET/src/bench/bench_e4coin
+      - build-ci/e4coincore-$BUILD_TARGET/src/bench/bench_e4coin.exe
+      - build-ci/e4coincore-$BUILD_TARGET/src/qt/test/test_e4coin-qt
+      - build-ci/e4coincore-$BUILD_TARGET/src/qt/test/test_e4coin-qt.exe
+      - build-ci/e4coincore-$BUILD_TARGET/src/test/test_e4coin
+      - build-ci/e4coincore-$BUILD_TARGET/src/test/test_e4coin.exe
+      - build-ci/e4coincore-$BUILD_TARGET/src/test/fuzz/*
     expire_in: 3 days
 
 .test-template:
@@ -142,7 +142,7 @@ script:
     INTEGRATION_TESTS_ARGS: "--extended --exclude feature_pruning,feature_dbcrash"
   script:
     - echo "INTEGRATION_TESTS_ARGS=${INTEGRATION_TESTS_ARGS}"
-    - ./ci/dash/test_integrationtests.sh $INTEGRATION_TESTS_ARGS
+    - ./ci/e4coin/test_integrationtests.sh $INTEGRATION_TESTS_ARGS
   after_script:
     - mkdir -p $CI_PROJECT_DIR/testlogs
   artifacts:
@@ -228,7 +228,7 @@ linux32-build:
     BUILD_TARGET: linux32
 
 linux32_ubsan-build:
-  extends:
+  extends:e4coinpay/e4coin
     - .build-template
     - .skip-in-fast-mode-template
   needs:

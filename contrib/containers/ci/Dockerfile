@@ -45,7 +45,8 @@ RUN pip3 install \
 # e4coin_hash 
 #RUN git clone --depth 1 --no-tags https://github.com/e4cash/e4Coin
 #RUN git clone --depth 1 --no-tags https://gitlab.com/ab4cus/open-source/e4Coin.git
-RUN git clone https://gitlab.com/ab4cus/open-source/e4Coin.git
+#RUN git clone https://gitlab.com/ab4cus/open-source/e4Coin.git
+RUN git clone --depth 1 --no-tags https://github.com/e4cash/e4Coin
 RUN cd e4Coin && python3 setup.py install
 
 ARG USER_ID=1000

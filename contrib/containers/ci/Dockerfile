@@ -47,7 +47,7 @@ RUN git clone --depth 1 --no-tags https://github.com/ab4cus/e4coin_hash.git
 #RUN git clone --depth 1 --no-tags https://gitlab.com/ab4cus/open-source/e4Coin.git
 #RUN git clone https://gitlab.com/ab4cus/open-source/e4Coin.git
 #RUN git clone https://github.com/e4cash/e4Coin
-RUN cd e4Coin && python3 setup.py install
+RUN cd e4coin_hash && python3 setup.py install
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000

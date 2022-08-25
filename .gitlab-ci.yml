@@ -43,8 +43,9 @@ builder-image:
   before_script:
     - echo HOST=$HOST
     - |
-      chmod 764 -R depends     
       ls -l depends
+      sudo chmod 764 -R depends     
+      
       if [ "$HOST" = "x86_64-apple-darwin19" ]; then
         mkdir -p depends/SDKs
         mkdir -p depends/sdk-sources  

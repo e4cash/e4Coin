@@ -49,9 +49,7 @@ builder-image:
     MAKEJOBS: -j4
   before_script:
     - echo HOST=$HOST
-    - |
-      ls -l depends 
-      
+    - 
       if [ "$HOST" = "x86_64-apple-darwin19" ]; then
         mkdir -p depends/SDKs
         mkdir -p depends/sdk-sources  

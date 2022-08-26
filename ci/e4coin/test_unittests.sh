@@ -6,7 +6,7 @@ export LC_ALL=C.UTF-8
 
 set -e
 
-source ./ci/dash/matrix.sh
+source ./ci/e4coin/matrix.sh
 
 if [ "$RUN_UNIT_TESTS" != "true" ]; then
   echo "Skipping unit tests"
@@ -20,12 +20,12 @@ export LD_LIBRARY_PATH=$BASE_BUILD_DIR/depends/$HOST/lib
 export WINEDEBUG=fixme-all
 export BOOST_TEST_LOG_LEVEL=test_suite
 
-cd build-ci/dashcore-$BUILD_TARGET
+cd build-ci/e4coincore-$BUILD_TARGET
 
 bash -c "${CI_WAIT}" &  # Print dots in case the unit tests take a long time to run
 if [ "$DIRECT_WINE_EXEC_TESTS" = "true" ]; then
   # Inside Docker, binfmt isn't working so we can't trust in make invoking windows binaries correctly
-  wine ./src/test/test_dash.exe
+  wine ./src/test/test_e4coin.exe
 else
   make $MAKEJOBS check VERBOSE=1
 fi

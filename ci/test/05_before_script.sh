@@ -8,9 +8,9 @@ export LC_ALL=C.UTF-8
 
 # Make sure default datadir does not exist and is never read by creating a dummy file
 if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-  echo > $HOME/Library/Application\ Support/DashCore
+  echo > $HOME/Library/Application\ Support/e4CoinCore
 else
-  DOCKER_EXEC echo \> \$HOME/.dashcore
+  DOCKER_EXEC echo \> \$HOME/.e4coincore
 fi
 
 DOCKER_EXEC mkdir -p depends/SDKs depends/sdk-sources

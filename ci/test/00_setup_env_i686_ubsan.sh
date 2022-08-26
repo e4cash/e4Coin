@@ -10,5 +10,5 @@ export HOST=i686-pc-linux-gnu
 export PACKAGES="g++-multilib python3-zmq"
 export GOAL="install"
 export BITCOIN_CONFIG="--enable-zmq --disable-bip70 --enable-reduce-exports --enable-crash-hooks --with-sanitizers=undefined"
-export CONFIG_SHELL="/bin/dash"
+export CONFIG_SHELL="/bin/e4coin"
 export PYZMQ=true

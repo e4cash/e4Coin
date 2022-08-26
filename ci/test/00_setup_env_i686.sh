@@ -11,5 +11,5 @@ export DEP_OPTS="NO_PROTOBUF=1"
 export PACKAGES="g++-multilib python3-zmq"
 export GOAL="install"
 export BITCOIN_CONFIG="--enable-zmq --enable-reduce-exports --enable-crash-hooks --with-sanitizers=undefined"
-export CONFIG_SHELL="/bin/dash"
+export CONFIG_SHELL="/bin/e4coin"
 export PYZMQ=true

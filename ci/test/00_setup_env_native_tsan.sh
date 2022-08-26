@@ -12,5 +12,5 @@ export TEST_RUNNER_EXTRA="--extended --exclude feature_pruning,feature_dbcrash,w
 export RUN_BENCH=true
 export GOAL="install"
 export BITCOIN_CONFIG="--enable-zmq --enable-reduce-exports --enable-crash-hooks --with-sanitizers=thread"
-export CPPFLAGS="-DDEBUG_LOCKORDER -DENABLE_DASH_DEBUG -DARENA_DEBUG"
+export CPPFLAGS="-DDEBUG_LOCKORDER -DENABLE_E4COIN_DEBUG -DARENA_DEBUG"
 export PYZMQ=true

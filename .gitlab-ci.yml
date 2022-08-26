@@ -16,17 +16,24 @@ stages:
 
 builder-image:
   stage: builder-image
-  image: docker:19.03.5
+  image: docker:20.10.16
   services:
-    - docker:19.03.5-dind
+    - docker:20.10.16-dind
   variables:
     DOCKER_HOST: "tcp://docker:2375"
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
+    CI_DEBUG_TRACE: "true"
   before_script:
     - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+## gitlab-running
+#    - mkdir -p $HOME/.docker
+#    - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
+#    - echo $CI_REGISTRY_IMAGE
+#    - echo $CI_COMMIT_REF_SLUG
   script:
     - cd contrib/containers/ci
+    - docker info
     - docker pull $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG || true
     - docker pull $CI_REGISTRY_IMAGE:builder-develop || true
     - docker build --cache-from $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG --cache-from $CI_REGISTRY_IMAGE:builder-develop -t $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG -f Dockerfile .
@@ -42,15 +49,13 @@ builder-image:
     MAKEJOBS: -j4
   before_script:
     - echo HOST=$HOST
-    - |
-      ls -l depends 
-      
+    - 
       if [ "$HOST" = "x86_64-apple-darwin19" ]; then
         mkdir -p depends/SDKs
         mkdir -p depends/sdk-sources  
         OSX_SDK_BASENAME="Xcode-${XCODE_VERSION}-${XCODE_BUILD_ID}-extracted-SDK-with-libcxx-headers.tar.gz"
         OSX_SDK_PATH="depends/sdk-sources/${OSX_SDK_BASENAME}"
-        if [ ! -f "$OSX_SDK_PATH" ]; then
+        if [ ! -f "$OSX_SDK_PATH" ]; thenmore
           echo "Downloading MacOS SDK"
           curl --location --fail "${SDK_URL}/${OSX_SDK_BASENAME}" -o "$OSX_SDK_PATH"
         fi

@@ -99,7 +99,7 @@ const std::string gCoinJoinName = "CoinJoin";
 */
 int nWalletBackups = 10;
 
-const char * const BITCOIN_CONF_FILENAME = "dash.conf";
+const char * const BITCOIN_CONF_FILENAME = "e4coin.conf";
 const char * const BITCOIN_SETTINGS_FILENAME = "settings.json";
 
 ArgsManager gArgs;
@@ -844,12 +844,12 @@ void PrintExceptionContinue(const std::exception_ptr pex, const char* pszExcepti
 
 fs::path GetDefaultDataDir()
 {
-    // Windows: C:\Users\Username\AppData\Roaming\DashCore
-    // macOS: ~/Library/Application Support/DashCore
-    // Unix-like: ~/.dashcore
+    // Windows: C:\Users\Username\AppData\Roaming\E4CoinCore
+    // macOS: ~/Library/Application Support/E4CoinCore
+    // Unix-like: ~/.e4coincore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "DashCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "E4CoinCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -859,10 +859,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // macOS
-    return pathRet / "Library/Application Support/DashCore";
+    return pathRet / "Library/Application Support/E4CoinCore";
 #else
     // Unix-like
-    return pathRet / ".dashcore";
+    return pathRet / ".e4coincore";
 #endif
 #endif
 }

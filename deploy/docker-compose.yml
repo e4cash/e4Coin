@@ -1,0 +1,36 @@
+# e4Coin — despliegue para unraid / servidor físico (Docker Compose).
+#   docker compose -f deploy/docker-compose.yml up -d
+# Levanta un nodo semilla mainnet. Para testnet, poner E4COIN_NET=testnet.
+services:
+  e4coin-node:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: ab4cus/e4coin-core:latest
+    container_name: e4coin-node
+    restart: unless-stopped
+    stop_grace_period: 60s
+    environment:
+      # Flags extra para el daemon (ver e4coin.conf.example)
+      E4COIN_EXTRA_ARGS: ""
+    ports:
+      - "7834:7834"     # P2P mainnet (abrir al exterior para que sea semilla)
+      - "127.0.0.1:7832:7832"   # RPC mainnet (solo local por seguridad)
+      - "127.0.0.1:28332:28332" # ZMQ rawtx
+      - "127.0.0.1:28333:28333" # ZMQ rawblock
+      - "127.0.0.1:28334:28334" # ZMQ InstantSend locks
+    volumes:
+      - e4coin-data:/home/e4coin/.e4coincore
+      # Montar la config (copiar e4coin.conf.example y editar):
+      # - ./e4coin.conf:/home/e4coin/.e4coincore/e4coin.conf:ro
+    healthcheck:
+      test: ["CMD", "e4coin-cli", "-datadir=/home/e4coin/.e4coincore", "getblockchaininfo"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+volumes:
+  e4coin-data:
+    # En unraid, apuntar a un share del array:
+    # driver_opts: { type: none, o: bind, device: /mnt/user/appdata/e4coin }

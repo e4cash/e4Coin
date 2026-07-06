@@ -1,0 +1,29 @@
+# e4Coin — configuración de ejemplo para un nodo semilla / masternode.
+# Copiar a <datadir>/e4coin.conf y ajustar. NUNCA commitear con credenciales reales.
+
+# --- Red ---
+# testnet=1        # descomentar para la testnet pública
+listen=1
+server=1
+# externalip=TU.IP.PUBLICA.AQUI
+# bind=0.0.0.0
+
+# --- RPC (usa autenticación por cookie por defecto; para acceso remoto define auth) ---
+rpcbind=0.0.0.0
+rpcallowip=127.0.0.1
+# rpcallowip=10.0.0.0/8        # rango del cluster K8s/servidor
+# rpcuser=CAMBIAR
+# rpcpassword=CAMBIAR_POR_ALGO_LARGO_Y_ALEATORIO
+
+# --- ZMQ (necesario para el Oracle/bridge de la L2 en Fase 4) ---
+zmqpubrawtx=tcp://0.0.0.0:28332
+zmqpubrawblock=tcp://0.0.0.0:28333
+zmqpubhashtxlock=tcp://0.0.0.0:28334   # InstantSend locks
+
+# --- Índices útiles para explorer / bridge ---
+txindex=1
+# addressindex=1
+# spentindex=1
+
+# --- Masternode (federación). Requiere colateral de 1000 E4C y BLS key registrada ---
+# masternodeblsprivkey=TU_CLAVE_BLS_PRIVADA

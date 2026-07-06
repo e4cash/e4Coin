@@ -1,0 +1,121 @@
+# e4Coin — nodos semilla en Kubernetes (StatefulSet).
+# Aplicar:  kubectl apply -f deploy/k8s/e4coin-seed.yaml
+# Ajustar storageClassName y la imagen del registry antes de aplicar.
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: e4coin
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: e4coin-config
+  namespace: e4coin
+data:
+  e4coin.conf: |
+    listen=1
+    server=1
+    rpcbind=0.0.0.0
+    rpcallowip=10.0.0.0/8
+    txindex=1
+    zmqpubrawtx=tcp://0.0.0.0:28332
+    zmqpubrawblock=tcp://0.0.0.0:28333
+    zmqpubhashtxlock=tcp://0.0.0.0:28334
+---
+# Servicio headless: da DNS estable a cada pod (e4coin-seed-0.e4coin-p2p...)
+apiVersion: v1
+kind: Service
+metadata:
+  name: e4coin-p2p
+  namespace: e4coin
+  labels: { app: e4coin-seed }
+spec:
+  clusterIP: None
+  selector: { app: e4coin-seed }
+  ports:
+    - { name: p2p, port: 7834, targetPort: 7834 }
+---
+# Servicio de RPC/ZMQ interno para el Oracle/bridge de la L2
+apiVersion: v1
+kind: Service
+metadata:
+  name: e4coin-rpc
+  namespace: e4coin
+spec:
+  selector: { app: e4coin-seed }
+  ports:
+    - { name: rpc,        port: 7832, targetPort: 7832 }
+    - { name: zmq-rawtx,  port: 28332, targetPort: 28332 }
+    - { name: zmq-block,  port: 28333, targetPort: 28333 }
+    - { name: zmq-islock, port: 28334, targetPort: 28334 }
+---
+# Servicio LoadBalancer para exponer el P2P al exterior (rol de semilla pública)
+apiVersion: v1
+kind: Service
+metadata:
+  name: e4coin-p2p-public
+  namespace: e4coin
+  annotations:
+    # metallb/unraid: fijar IP; cloud: se asigna sola
+    metallb.universe.tf/loadBalancerIPs: ""
+spec:
+  type: LoadBalancer
+  selector: { app: e4coin-seed }
+  ports:
+    - { name: p2p, port: 7834, targetPort: 7834 }
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: e4coin-seed
+  namespace: e4coin
+spec:
+  serviceName: e4coin-p2p
+  replicas: 2
+  selector:
+    matchLabels: { app: e4coin-seed }
+  template:
+    metadata:
+      labels: { app: e4coin-seed }
+    spec:
+      securityContext:
+        fsGroup: 999          # gid del usuario e4coin en la imagen
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: e4coind
+          image: ghcr.io/ab4cus/e4coin-core:latest
+          imagePullPolicy: IfNotPresent
+          args: ["e4coind"]
+          ports:
+            - { name: p2p, containerPort: 7834 }
+            - { name: rpc, containerPort: 7832 }
+            - { name: zmq-rawtx, containerPort: 28332 }
+            - { name: zmq-block, containerPort: 28333 }
+            - { name: zmq-islock, containerPort: 28334 }
+          volumeMounts:
+            - { name: data, mountPath: /home/e4coin/.e4coincore }
+            - { name: config, mountPath: /home/e4coin/.e4coincore/e4coin.conf, subPath: e4coin.conf }
+          resources:
+            requests: { cpu: "500m", memory: "1Gi" }
+            limits:   { cpu: "2",    memory: "4Gi" }
+          readinessProbe:
+            exec:
+              command: ["e4coin-cli", "-datadir=/home/e4coin/.e4coincore", "getblockchaininfo"]
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+          livenessProbe:
+            tcpSocket: { port: 7834 }
+            initialDelaySeconds: 120
+            periodSeconds: 30
+      volumes:
+        - name: config
+          configMap: { name: e4coin-config }
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        # storageClassName: longhorn   # ajustar al del cluster
+        resources:
+          requests: { storage: 20Gi }

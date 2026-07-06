@@ -38,14 +38,15 @@ const CBaseChainParams& BaseParams()
  */
 std::unique_ptr<CBaseChainParams> CreateBaseChainParams(const std::string& chain)
 {
+    // e4Coin: puertos RPC/Tor alineados a la identidad 2019 (P2P 7834/17834/17835/17836)
     if (chain == CBaseChainParams::MAIN)
-        return std::make_unique<CBaseChainParams>("", 9998, 9996);
+        return std::make_unique<CBaseChainParams>("", 7832, 7830);
     else if (chain == CBaseChainParams::TESTNET)
-        return std::make_unique<CBaseChainParams>("testnet3", 19998, 19996);
+        return std::make_unique<CBaseChainParams>("testnet3", 17832, 17830);
     else if (chain == CBaseChainParams::DEVNET)
-        return std::make_unique<CBaseChainParams>(gArgs.GetDevNetName(), 19798, 19796);
+        return std::make_unique<CBaseChainParams>(gArgs.GetDevNetName(), 17838, 17830);
     else if (chain == CBaseChainParams::REGTEST)
-        return std::make_unique<CBaseChainParams>("regtest", 19898, 19896);
+        return std::make_unique<CBaseChainParams>("regtest", 17839, 17831);
     else
         throw std::runtime_error(strprintf("%s: Unknown chain %s.", __func__, chain));
 }

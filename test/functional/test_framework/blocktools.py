@@ -38,7 +38,7 @@ from io import BytesIO
 MAX_BLOCK_SIGOPS = 40000
 
 # Genesis block time (regtest)
-TIME_GENESIS_BLOCK = 1417713337
+TIME_GENESIS_BLOCK = 1550102403  # e4Coin regtest genesis
 
 MAX_FUTURE_BLOCK_TIME = 2 * 60 * 60
 

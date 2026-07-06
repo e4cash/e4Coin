@@ -276,15 +276,13 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        // Genesis e4Coin: mensaje de 2019 conservado; nTime = 2019-02-14 00:00 UTC
-        // (fecha del titular). nNonce se rinde con -mine-genesis (ver abajo) y los
-        // asserts se cierran con los valores definitivos antes del lanzamiento.
-        genesis = CreateGenesisBlock(1550102400, 0, 0x1e0ffff0, 1, 50 * COIN);
+        // Genesis e4Coin mainnet — DEFINITIVO (minado 2026-07-05).
+        // Mensaje de 2019 conservado; nTime = 2019-02-14 00:00 UTC (fecha del titular).
+        genesis = CreateGenesisBlock(1550102400, 4031864, 0x1e0ffff0, 1, 50 * COIN);
         MineGenesisBlockIfRequested(genesis, strNetworkID);
         consensus.hashGenesisBlock = genesis.GetHash();
-        // TODO(e4coin-genesis): fijar tras minar el genesis definitivo de mainnet
-        // assert(consensus.hashGenesisBlock == uint256S("0x"));
-        // assert(genesis.hashMerkleRoot == uint256S("0x"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000296515ef56205354214c0fed3f62f3b0853567c24deeee97a5cb9bfafe8"));
+        assert(genesis.hashMerkleRoot == uint256S("0x15b32d1e87d5adbf95e9810d565b8a8bbe2d95661768b3fec41c68c303283aed"));
 
         // Note that of those which support the service bits prefix, most only support a subset of
         // possible options.
@@ -334,18 +332,17 @@ public:
         nPoolMaxParticipants = 20;
         nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
 
-        // TODO(e4coin-keys): REGENERAR antes de cualquier lanzamiento. Direccion spork
-        // placeholder (formato 'E'); las claves definitivas salen de la ceremonia de
-        // claves de la federacion (paso 2 del build).
-        vSporkAddresses = {"EPLACEHOLDERSporkAddressRegenerate0000"};
+        // Clave spork e4Coin mainnet (regenerada 2026-07-05; privada custodiada por
+        // el fundador). Ampliar a multi-clave (nMinSporkKeys 2-de-3) antes de mainnet.
+        vSporkAddresses = {"EUMyr9j82MTDsbbh5r4QXRHLdNcphJXJFo"};
         nMinSporkKeys = 1;
 
         nCreditPoolPeriodBlocks = 576;
 
-        // Cadena nueva: sin checkpoints heredados. Anadir el genesis tras minarlo
-        // y checkpoints reales conforme la red avance.
+        // Cadena nueva: el genesis es el unico checkpoint por ahora
         checkpointData = {
             {
+                {0, genesis.GetHash()},
             }
         };
 
@@ -446,13 +443,12 @@ public:
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        // Genesis testnet e4Coin: mismo mensaje 2019, nTime = mainnet + 1s
-        genesis = CreateGenesisBlock(1550102401, 0, 0x1e0ffff0, 1, 50 * COIN);
+        // Genesis testnet e4Coin — DEFINITIVO (minado 2026-07-05); nTime = mainnet + 1s
+        genesis = CreateGenesisBlock(1550102401, 938882, 0x1e0ffff0, 1, 50 * COIN);
         MineGenesisBlockIfRequested(genesis, strNetworkID);
         consensus.hashGenesisBlock = genesis.GetHash();
-        // TODO(e4coin-genesis): fijar tras minar el genesis definitivo de testnet
-        // assert(consensus.hashGenesisBlock == uint256S("0x"));
-        // assert(genesis.hashMerkleRoot == uint256S("0x"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0000099dd3627a16a3001409ad78f96a7e4aea9b1692af650ab4a05881a4f205"));
+        assert(genesis.hashMerkleRoot == uint256S("0x15b32d1e87d5adbf95e9810d565b8a8bbe2d95661768b3fec41c68c303283aed"));
 
         vFixedSeeds.clear();
 
@@ -493,15 +489,16 @@ public:
         nPoolMaxParticipants = 20;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
 
-        // TODO(e4coin-keys): REGENERAR antes del lanzamiento de testnet
-        vSporkAddresses = {"yPLACEHOLDERSporkAddressRegenerate000"};
+        // Clave spork e4Coin testnet (regenerada 2026-07-05)
+        vSporkAddresses = {"yQSHrwNQbtCz1XY2PuvwxzvcAQrA8XsW9e"};
         nMinSporkKeys = 1;
 
         nCreditPoolPeriodBlocks = 576;
 
-        // Cadena nueva: sin checkpoints heredados
+        // Cadena nueva: el genesis es el unico checkpoint por ahora
         checkpointData = {
             {
+                {0, genesis.GetHash()},
             }
         };
 
@@ -600,14 +597,12 @@ public:
         m_assumed_chain_state_size = 0;
 
         UpdateDevnetSubsidyAndDiffParametersFromArgs(args);
-        // Genesis devnet e4Coin: dificultad trivial, se rinde en el primer arranque
-        // con -minegenesis y se fijan los valores definitivos.
-        genesis = CreateGenesisBlock(1550102402, 0, 0x207fffff, 1, 50 * COIN);
+        // Genesis base devnet e4Coin — DEFINITIVO (minado 2026-07-05; dificultad trivial)
+        genesis = CreateGenesisBlock(1550102402, 1, 0x207fffff, 1, 50 * COIN);
         MineGenesisBlockIfRequested(genesis, strNetworkID);
         consensus.hashGenesisBlock = genesis.GetHash();
-        // TODO(e4coin-genesis): fijar tras minar el genesis definitivo de devnet
-        // assert(consensus.hashGenesisBlock == uint256S("0x"));
-        // assert(genesis.hashMerkleRoot == uint256S("0x"));
+        assert(consensus.hashGenesisBlock == uint256S("0x7238bfec58655550af0dfba9f3b492d567ef033cf91bdcb1db74f9aa99ed89b7"));
+        assert(genesis.hashMerkleRoot == uint256S("0x15b32d1e87d5adbf95e9810d565b8a8bbe2d95661768b3fec41c68c303283aed"));
 
         devnetGenesis = FindDevNetGenesisBlock(genesis, 50 * COIN);
         consensus.hashDevnetGenesisBlock = devnetGenesis.GetHash();
@@ -663,7 +658,8 @@ public:
         nPoolMaxParticipants = 20;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
 
-        vSporkAddresses = {"yjPtiKh2uwk3bDutTEA2q9mCtXyiZRWn55"};
+        // Clave spork e4Coin devnet (misma que testnet, regenerada 2026-07-05)
+        vSporkAddresses = {"yQSHrwNQbtCz1XY2PuvwxzvcAQrA8XsW9e"};
         nMinSporkKeys = 1;
 
         nCreditPoolPeriodBlocks = 576;
@@ -844,13 +840,12 @@ public:
         UpdateDIP3ParametersFromArgs(args);
         UpdateBudgetParametersFromArgs(args);
 
-        // Genesis regtest e4Coin (mensaje 2019; dificultad trivial)
-        genesis = CreateGenesisBlock(1550102403, 0, 0x207fffff, 1, 50 * COIN);
+        // Genesis regtest e4Coin — DEFINITIVO (minado 2026-07-05; dificultad trivial)
+        genesis = CreateGenesisBlock(1550102403, 2, 0x207fffff, 1, 50 * COIN);
         MineGenesisBlockIfRequested(genesis, strNetworkID);
         consensus.hashGenesisBlock = genesis.GetHash();
-        // TODO(e4coin-genesis): fijar tras minar el genesis definitivo de regtest
-        // assert(consensus.hashGenesisBlock == uint256S("0x"));
-        // assert(genesis.hashMerkleRoot == uint256S("0x"));
+        assert(consensus.hashGenesisBlock == uint256S("0x104908776176fd034a5e75a2df6f85256c3f74385933dab455f3aaea228ccaa7"));
+        assert(genesis.hashMerkleRoot == uint256S("0x15b32d1e87d5adbf95e9810d565b8a8bbe2d95661768b3fec41c68c303283aed"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.

@@ -63,7 +63,10 @@ bool CheckTransaction(const CTransaction& tx, TxValidationState& state)
             // With the introduction of CbTx, coinbase scripts are not required anymore to hold a valid block height
             minCbSize = 1;
         }
-        if (tx.vin[0].scriptSig.size() < minCbSize || tx.vin[0].scriptSig.size() > 100)
+        // e4Coin: limite superior 120 (Bitcoin/Dash usan 100) para permitir el
+        // mensaje completo del genesis de 2019 (97 chars => scriptSig de 105 bytes).
+        // Cambio de consenso deliberado y documentado; inocuo para coinbases normales.
+        if (tx.vin[0].scriptSig.size() < minCbSize || tx.vin[0].scriptSig.size() > 120)
             return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-cb-length");
     } else {
         for (const auto& txin : tx.vin)

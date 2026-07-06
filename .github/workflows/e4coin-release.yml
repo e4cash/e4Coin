@@ -1,0 +1,132 @@
+# e4Coin — build y publicación de binarios multiplataforma + imagen Docker.
+# Se dispara al empujar un tag v* (p.ej. v22.1.3-e4coin.1) o manualmente.
+name: e4Coin Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # crear releases y subir assets
+  packages: write   # publicar imagen en GHCR
+
+jobs:
+  # ----------------------------------------------------------------------------
+  linux:
+    name: Linux x86_64
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libtool autotools-dev automake \
+            pkg-config bsdmainutils python3 bison flex cmake curl ca-certificates
+      - name: Build depends
+        run: make -C depends -j"$(nproc)" NO_QT=1 NO_QR=1 NO_UPNP=1 NO_NATPMP=1
+      - name: Configure & make
+        run: |
+          HOST_PREFIX="$(ls -d depends/x86_64-*-linux-gnu)"
+          ./autogen.sh
+          CONFIG_SITE="$PWD/$HOST_PREFIX/share/config.site" ./configure \
+            --disable-tests --disable-bench --without-gui --disable-fuzz-binary --enable-zmq
+          make -j"$(nproc)"
+          strip src/e4coind src/e4coin-cli src/e4coin-tx src/e4coin-wallet
+      - name: Empaquetar
+        run: |
+          mkdir -p dist/e4coin-linux-x86_64
+          cp src/e4coind src/e4coin-cli src/e4coin-tx src/e4coin-wallet dist/e4coin-linux-x86_64/
+          tar czf e4coin-${{ github.ref_name }}-linux-x86_64.tar.gz -C dist e4coin-linux-x86_64
+      - uses: actions/upload-artifact@v4
+        with: { name: linux-x86_64, path: "*.tar.gz" }
+
+  # ----------------------------------------------------------------------------
+  windows:
+    name: Windows x86_64 (mingw cross)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar toolchain mingw
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libtool autotools-dev automake \
+            pkg-config bsdmainutils python3 bison flex cmake curl \
+            g++-mingw-w64-x86-64 nsis
+          sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+      - name: Build depends (HOST=x86_64-w64-mingw32)
+        run: make -C depends -j"$(nproc)" HOST=x86_64-w64-mingw32 NO_QT=1 NO_QR=1
+      - name: Configure & make
+        run: |
+          ./autogen.sh
+          CONFIG_SITE="$PWD/depends/x86_64-w64-mingw32/share/config.site" ./configure \
+            --disable-tests --disable-bench --without-gui --disable-fuzz-binary --enable-zmq
+          make -j"$(nproc)"
+          x86_64-w64-mingw32-strip src/e4coind.exe src/e4coin-cli.exe src/e4coin-tx.exe src/e4coin-wallet.exe
+      - name: Empaquetar
+        run: |
+          mkdir -p dist/e4coin-win64
+          cp src/e4coind.exe src/e4coin-cli.exe src/e4coin-tx.exe src/e4coin-wallet.exe dist/e4coin-win64/
+          cd dist && zip -r ../e4coin-${{ github.ref_name }}-win64.zip e4coin-win64
+      - uses: actions/upload-artifact@v4
+        with: { name: win64, path: "*.zip" }
+
+  # ----------------------------------------------------------------------------
+  macos:
+    name: macOS (arm64 + x86_64)
+    runs-on: macos-14   # runner Apple Silicon
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar toolchain
+        run: brew install automake libtool pkg-config cmake coreutils
+      - name: Build depends
+        run: make -C depends -j"$(sysctl -n hw.ncpu)" NO_QT=1 NO_QR=1
+      - name: Configure & make
+        run: |
+          HOST_PREFIX="$(ls -d depends/*-apple-darwin*)"
+          ./autogen.sh
+          CONFIG_SITE="$PWD/$HOST_PREFIX/share/config.site" ./configure \
+            --disable-tests --disable-bench --without-gui --disable-fuzz-binary --enable-zmq
+          make -j"$(sysctl -n hw.ncpu)"
+      - name: Empaquetar
+        run: |
+          mkdir -p dist/e4coin-macos
+          cp src/e4coind src/e4coin-cli src/e4coin-tx src/e4coin-wallet dist/e4coin-macos/
+          tar czf e4coin-${{ github.ref_name }}-macos.tar.gz -C dist e4coin-macos
+      - uses: actions/upload-artifact@v4
+        with: { name: macos, path: "*.tar.gz" }
+
+  # ----------------------------------------------------------------------------
+  docker:
+    name: Imagen Docker (GHCR)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/ab4cus/e4coin-core:latest
+            ghcr.io/ab4cus/e4coin-core:${{ github.ref_name }}
+
+  # ----------------------------------------------------------------------------
+  release:
+    name: Publicar GitHub Release
+    needs: [linux, windows, macos]
+    runs-on: ubuntu-24.04
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: artifacts }
+      - name: Crear release con binarios
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true

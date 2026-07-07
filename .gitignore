@@ -169,3 +169,16 @@ test/lint/.cppcheck/*
 
 # flake8 cache location
 .cache/*
+
+# e4Coin build artifacts (nombres nuevos; la lista original solo cubria dash*)
+src/e4coin
+src/e4coind
+src/e4coin-cli
+src/e4coin-gui
+src/e4coin-node
+src/e4coin-tx
+src/e4coin-wallet
+src/qt/e4coin-qt
+src/test/test_e4coin
+src/qt/test/test_e4coin-qt
+src/bench/bench_e4coin

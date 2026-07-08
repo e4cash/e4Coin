@@ -12,7 +12,7 @@ de gaming. Conserva la infraestructura de Dash: masternodes deterministas, **Cha
 on-chain y superbloques de tesorería.
 
 > Parte del monorepo [heliomultiverso](../). Documentos de referencia:
-> [PLAN-UNIFICADO](../PLAN-UNIFICADO.md) · [DISEÑO-ECONÓMICO-L1](../DISENO-ECONOMICO-L1.md) ·
+> [PLAN-UNIFICADO](../docs/PLAN-UNIFICADO.md) · [DISEÑO-ECONÓMICO-L1](../docs/DISENO-ECONOMICO-L1.md) ·
 > [whitepaper](../whitepaper/).
 
 ---
@@ -117,6 +117,25 @@ Datadir por defecto: `~/.e4coincore` · Config: `e4coin.conf` · Ticker: **E4C**
 
 ---
 
+## Instalación rápida (CLI)
+
+Binarios oficiales del último release, con verificación SHA256 y sin sudo/admin
+(instala en `~/.e4coin/bin` o `%LOCALAPPDATA%\e4Coin\bin`):
+
+```bash
+# Linux / macOS
+curl -fsSL https://raw.githubusercontent.com/ab4cus/e4Coin-core/develop/install.sh | sh
+```
+
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/ab4cus/e4Coin-core/develop/install.ps1 | iex
+```
+
+Versión concreta: `E4COIN_VERSION=vX.Y.Z` (sh) o `$env:E4COIN_VERSION="vX.Y.Z"` (ps).
+Si prefieres inspeccionar antes de ejecutar (recomendado), descarga el script y
+léelo: son ~150 líneas comentadas.
+
 ## Compilar desde fuente
 
 ### Dependencias (Debian/Ubuntu)
@@ -185,9 +204,9 @@ verde). Génesis definitivos minados; claves spork regeneradas.
 
 Pendiente para testnet pública → mainnet: seeders DNS, explorer, sporks multi-clave
 (2-de-3), builds reproducibles (Guix), registro SLIP-44 y ceremonia de claves de la
-federación. Ver el checklist en [DISEÑO-ECONÓMICO-L1 §4](../DISENO-ECONOMICO-L1.md).
+federación. Ver el checklist en [DISEÑO-ECONÓMICO-L1 §4](../docs/DISENO-ECONOMICO-L1.md).
 
-Fases siguientes (L2 EVM, motor ioquake3, integración): [PLAN-UNIFICADO](../PLAN-UNIFICADO.md).
+Fases siguientes (L2 EVM, motor ioquake3, integración): [PLAN-UNIFICADO](../docs/PLAN-UNIFICADO.md).
 
 ---
 

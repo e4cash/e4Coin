@@ -125,8 +125,13 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with: { path: artifacts }
+      - name: Generar SHA256SUMS (los instaladores CLI verifican contra este archivo)
+        run: |
+          mkdir -p release-files
+          find artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec cp {} release-files/ \;
+          cd release-files && sha256sum * > SHA256SUMS && cat SHA256SUMS
       - name: Crear release con binarios
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/**/*
+          files: release-files/*
           generate_release_notes: true

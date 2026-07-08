@@ -1,12 +1,13 @@
-# e4Coin — instalador CLI para Windows (PowerShell 5.1+ / 7).
+# e4Coin - instalador CLI para Windows (PowerShell 5.1+ / 7).
 #
 #   irm https://raw.githubusercontent.com/ab4cus/e4Coin-core/develop/install.ps1 | iex
 #
-# Prácticas aplicadas:
+# Practicas aplicadas:
 #   - sin privilegios de administrador: instala en %LOCALAPPDATA%\e4Coin\bin
 #   - verifica SHA256 contra el asset SHA256SUMS del release (si existe)
-#   - versión fijable:  $env:E4COIN_VERSION = "v22.1.3-e4coin.1"  (defecto: latest)
-#   - PATH de usuario actualizado (no el de máquina)
+#   - version fijable:  $env:E4COIN_VERSION = "v22.1.3-e4coin.1"  (defecto: latest)
+#   - PATH de usuario actualizado (no el de maquina)
+# Nota: archivo ASCII puro a proposito (PowerShell 5.1 lee sin BOM como ANSI).
 
 $ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -18,13 +19,13 @@ $Version = if ($env:E4COIN_VERSION) { $env:E4COIN_VERSION } else { "latest" }
 
 function Say([string]$msg) { Write-Host "e4coin-install: $msg" }
 
-# --- resolver versión ---
+# --- resolver version ---
 if ($Version -eq "latest") {
-    Say "consultando la última versión…"
+    Say "consultando la ultima version..."
     $release = Invoke-RestMethod -UseBasicParsing -Uri "https://api.github.com/repos/$Repo/releases/latest"
     $Version = $release.tag_name
 }
-Say "versión: $Version"
+Say "version: $Version"
 
 $Asset = "e4coin-$Version-win64.zip"
 $Url = "https://github.com/$Repo/releases/download/$Version/$Asset"
@@ -33,11 +34,11 @@ New-Item -ItemType Directory -Path $Tmp | Out-Null
 
 try {
     # --- descarga ---
-    Say "descargando $Asset…"
+    Say "descargando $Asset..."
     $ZipPath = Join-Path $Tmp $Asset
     Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $ZipPath
 
-    # --- verificación SHA256 ---
+    # --- verificacion SHA256 ---
     $SumsUrl = "https://github.com/$Repo/releases/download/$Version/SHA256SUMS"
     $SumsPath = Join-Path $Tmp "SHA256SUMS"
     $expected = $null
@@ -45,17 +46,17 @@ try {
         Invoke-WebRequest -UseBasicParsing -Uri $SumsUrl -OutFile $SumsPath
         $line = Select-String -Path $SumsPath -Pattern ([regex]::Escape($Asset)) | Select-Object -First 1
         if ($line) { $expected = ($line.Line -split "\s+")[0] }
-    } catch { Say "aviso: el release no publica SHA256SUMS; se omite la verificación" }
+    } catch { Say "aviso: el release no publica SHA256SUMS; se omite la verificacion" }
     if ($expected) {
         $actual = (Get-FileHash -Algorithm SHA256 -Path $ZipPath).Hash.ToLowerInvariant()
         if ($actual -ne $expected.ToLowerInvariant()) {
             throw "checksum SHA256 INCORRECTO para $Asset (esperado $expected, obtenido $actual)"
         }
-        Say "checksum SHA256 verificado ✓"
+        Say "checksum SHA256 verificado [OK]"
     }
 
-    # --- instalación ---
-    Say "instalando en $BinDir…"
+    # --- instalacion ---
+    Say "instalando en $BinDir..."
     Expand-Archive -Path $ZipPath -DestinationPath $Tmp -Force
     New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
     $payload = Join-Path $Tmp "e4coin-win64"
@@ -71,9 +72,9 @@ try {
         Say "PATH de usuario actualizado (abre una nueva terminal para usarlo)"
     }
 
-    Say "listo ✓"
+    Say "listo [OK]"
     Say "arrancar un nodo:   e4coind -daemon     (config: %APPDATA%\e4CoinCore\e4coin.conf)"
-    Say "desinstalar:        Remove-Item -Recurse -Force `"$InstallDir`""
+    Say "desinstalar:        Remove-Item -Recurse -Force '$InstallDir'"
 } finally {
     Remove-Item -Recurse -Force $Tmp -ErrorAction SilentlyContinue
 }

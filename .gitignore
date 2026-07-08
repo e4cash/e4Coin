@@ -182,3 +182,6 @@ src/qt/e4coin-qt
 src/test/test_e4coin
 src/qt/test/test_e4coin-qt
 src/bench/bench_e4coin
+
+# Visual Studio artifacts (proyecto MSVC: .suo, Browse.VC.db, etc.)
+.vs/

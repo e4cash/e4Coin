@@ -1,6 +1,6 @@
 # e4Coin Core
 
-**e4Coin (E4C)** es la blockchain de capa 1 (L1) del ecosistema **PlayChain** — una
+**e4Coin (E4C)** es la blockchain de capa 1 (L1) del ecosistema **Play4Chain** — una
 plataforma de gaming Web3 donde los recursos que los jugadores ganan en distintos juegos
 se intercambian en un marketplace único. e4Coin provee el token de reserva, la
 gobernanza, el colateral de masternodes y el *settlement* del puente hacia la L2.
